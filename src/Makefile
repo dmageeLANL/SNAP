@@ -1,6 +1,7 @@
 #
 # Build SNAP
 #
+
 OPT = yes
 FFLAGS =
 FFLAG2 =
@@ -23,17 +24,13 @@ TARGET = gsnap
 #TARGET = ksnap
 #TARGET = xsnap
 
-#HASWELL = yes
 
-ifeq ($(MPI),cray)
-  MPI = yes
+ifneq ($(CRAY_CPU_TARGET),)
   MPIFLAGS = -I$(MPICH_DIR)/include -L$(MPICH_DIR)/lib -lmpich
-  ifeq ($(TARGET),gsnap)
-    FORTRAN = gfortran
-  else ifeq ($(TARGET),xsnap)
-    FORTRAN = ifx
-  else
-    FORTRAN = ifort
+  FORTRAN = ftn
+  MPI = yes
+  ifeq ($(CRAY_CPU_TARGET),haswell)
+    HASWELL = yes
   endif
 endif
 
@@ -77,7 +74,8 @@ ifeq ($(TARGET),gsnap)
 endif
 
 ifeq ($(TARGET),isnap)
-  FFLAGS = -O3 $(OMPFLAG) -ip -align array32byte -qno-opt-dynamic-align -fno-fnalias -fp-model fast -fp-speculation fast
+  FFLAGS  = -O3 $(OMPFLAG) -ip -align array32byte -qno-opt-dynamic-align -fno-fnalias 
+  FFLAGS += -fp-model fast -fp-speculation fast
   ifeq ($(HASWELL),yes)
     FFLAGS := $(FFLAGS) -xcore-avx2
   else

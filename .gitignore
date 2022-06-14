@@ -1,3 +1,8 @@
 src/*.o
 src/*.mod
 src/gsnap
+src/isnap
+src/ksnap
+src/xsnap
+src/plib.f90
+src/time.f90
